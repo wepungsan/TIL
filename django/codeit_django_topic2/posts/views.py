@@ -1,4 +1,5 @@
-from django.shortcuts import redirect, render
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 from posts.forms import PostForm
 from posts.models import Post
 
@@ -12,7 +13,15 @@ def post_list(request):
 
 
 def post_detail(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    # 404 에러 방법 1
+    # try:
+    #     post = Post.objects.get(pk=post_id)
+    # except Post.DoesNotExist:
+    #     raise Http404()
+
+    # 404 에러 방법 2
+    post = get_object_or_404(Post, id=post_id)
+
     context = {'post':post}
 
     return render(request, 'posts/post_detail.html', context=context)
@@ -23,7 +32,6 @@ def post_create(request):
         # 방법 1
         # title = request.POST['title']
         # content = request.POST['content']
-
         # new_post = Post(
         #     title = title,
         #     content = content
@@ -44,7 +52,7 @@ def post_create(request):
 
 
 def post_update(request, post_id):
-    post = Post.objects.get(id=post_id)
+    post = get_object_or_404(Post, id=post_id)
 
     if request.method == 'POST':
         post_form = PostForm(request.POST, instance=post)
@@ -59,7 +67,7 @@ def post_update(request, post_id):
 
 
 def post_delete(request, post_id):
-    post = Post.objects.get(id=post_id)
+    post = get_object_or_404(Post, id=post_id)
 
     if request.method == 'POST':
         post.delete()
