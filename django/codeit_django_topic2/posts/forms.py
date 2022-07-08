@@ -1,4 +1,5 @@
 from dataclasses import field
+from tkinter import Widget
 from django import forms
 from posts.models import Post
 from posts.validators import validate_symbols
@@ -19,6 +20,15 @@ class PostForm(forms.ModelForm):
         # fields = ['title', 'content']
         # fields 방법 2
         fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'title',
+                'placeholder': '제목을 입력해주세요.'
+                }),
+            'content': forms.Textarea(attrs={
+                'placeholder': '내용을 입력해주세요.'
+                })
+            }
 
     def clean_title(self):
         title = self.cleaned_data['title']
