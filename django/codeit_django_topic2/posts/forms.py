@@ -1,6 +1,8 @@
 from dataclasses import field
 from django import forms
 from posts.models import Post
+from posts.validators import validate_symbols
+from django.core.exceptions import ValidationError
 
 # 방법 1
 # class PostForm(forms.Form):
@@ -9,8 +11,19 @@ from posts.models import Post
 
 # 방법 2
 class PostForm(forms.ModelForm):
+    # memo = forms.CharField(max_length=80, validators=[validate_symbols])
     
     class Meta:
         model = Post
+        # fields 방법 1
         # fields = ['title', 'content']
+        # fields 방법 2
         fields = '__all__'
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+
+        if '*' in title:
+            raise ValidationError('*는 포함될 수 없습니다.')
+            
+        return title
