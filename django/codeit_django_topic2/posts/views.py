@@ -20,6 +20,7 @@ def post_detail(request, post_id):
 
 def post_create(request):
     if request.method == 'POST':
+        # 방법 1
         # title = request.POST['title']
         # content = request.POST['content']
 
@@ -29,11 +30,14 @@ def post_create(request):
         # )
         # new_post.save()
 
+        # 방법 2
         post_form = PostForm(request.POST)
-        new_post = post_form.save()
 
-        return redirect('post-detail', post_id=new_post.id)
+        if post_form.is_valid():
+            new_post = post_form.save()
+
+            return redirect('post-detail', post_id=new_post.id)
     else:
         post_form = PostForm()
 
-        return render(request, 'posts/post_form.html', {'form': post_form})
+    return render(request, 'posts/post_form.html', {'form': post_form})
