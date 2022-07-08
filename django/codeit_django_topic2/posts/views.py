@@ -60,9 +60,12 @@ def post_update(request, post_id):
 
 def post_delete(request, post_id):
     post = Post.objects.get(id=post_id)
-    post.delete()
 
-    return redirect('post-list')
+    if request.method == 'POST':
+        post.delete()
 
+        return redirect('post-list')
+    else:
+        return render(request, 'posts/post_confirm_delete.html', {'post': post})
 
 
